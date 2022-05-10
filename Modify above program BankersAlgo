@@ -1,0 +1,196 @@
+#include <stdio.h>
+#include <stdlib.h>
+int Alloc[10][10], Need[10][10], Max[10][10], Avail[10], Req[10], Work[10];
+int n, m, i, j, a = 65, b = 65, c = 65, d = 65, proc;
+void input()
+{
+    printf("Enter the no of processes: ");
+    scanf("%d", &n);
+    printf("Enter the no of resources: ");
+    scanf("%d", &m);
+    printf("\nEnter the Max Matrix: \n");
+    for (i = 0; i < n; i++)
+    {
+        for (j = 0; j < m; j++)
+            scanf("%d", &Max[i][j]);
+    }
+    printf("\nEnter the Allocation matrix: \n");
+    for (i = 0; i < n; i++)
+    {
+        for (j = 0; j < m; j++)
+            scanf("%d", &Alloc[i][j]);
+    }
+}
+void Accept_available()
+{
+    printf("\nEnter Available Resources: ");
+    for (i = 0; i < m; i++)
+    {
+        scanf("%d", &Avail[i]);
+    }
+}
+void display()
+{
+    printf("\nAllocation Matrix:\n");
+    for (i = 0; i < m; i++)
+    {
+        printf("\t%c", a++);
+    }
+    printf("\n");
+    for (i = 0; i < n; i++)
+    {
+        printf("p%d", i);
+        for (j = 0; j < m; j++)
+            printf("\t%d ", Alloc[i][j]);
+        printf("\n");
+    }
+    printf("\nMax Matrix:\n");
+    for (i = 0; i < m; i++)
+    {
+        printf("\t%c", b++);
+    }
+    printf("\n");
+    for (i = 0; i < n; i++)
+    {
+        printf("p%d", i);
+        for (j = 0; j < m; j++)
+            printf("\t%d ", Max[i][j]);
+        printf("\n");
+    }
+}
+void Eval_Need()
+{
+    for (i = 0; i < n; i++)
+    {
+        for (j = 0; j < m; j++)
+            Need[i][j] = Max[i][j] - Alloc[i][j];
+    }
+}
+void display_need()
+{
+    Eval_Need();
+    printf("Need Matrix:\n");
+    for (i = 0; i < m; i++)
+    {
+        printf("\t%c", c++);
+    }
+    printf("\n");
+    for (i = 0; i < n; i++)
+    {
+        printf("p%d", i);
+        for (j = 0; j < m; j++)
+        {
+            printf("\t%d ", Need[i][j]);
+        }
+        printf("\n");
+    }
+}
+void display_available()
+{
+    printf("Available:\n");
+    for (i = 0; i < m; i++)
+    {
+        printf("\t%c", d++);
+    }
+    printf("\n");
+    for (i = 0; i < m; i++)
+        printf("\t%d ", Avail[i]);
+    printf("\n");
+}
+void acceptRequest()
+{
+    printf("\nEnter process no: ");
+    scanf("%d", &proc);
+    printf("\nEnter request for P%d: ", proc);
+    for (i = 0; i < m; i++)
+    {
+        scanf("%d", &Req[i]);
+    }
+}
+void request()
+{
+    int flag = 0;
+    for (i = 0; i < m; i++)
+    {
+        if (Req[i] < Need[proc][i])
+        {
+            printf("\nP%d Request Denied (Request is less than the need)", proc);
+            flag = 1;
+            break;
+        }
+        else if (Req[i] < Avail[i])
+        {
+            printf("\nP%d Request Denied (Request is less than the
+                   available) ",proc);
+                flag = 1;
+            break;
+        }
+    }
+    if (!flag)
+    {
+        for (i = 0; i < m; i++)
+        {
+            Avail[i] = Avail[i] - Req[i];
+            Alloc[proc][i] = Alloc[proc][i] + Req[i];
+            Need[proc][i] = Need[proc][i] - Req[i];
+        }
+        printf("\nP%d Request Granted", proc);
+    }
+}
+void safetyalgo()
+{
+    int i, j, k, x = 0, a[10];
+    int Finished[10];
+    int pflag = 0, flag = 0;
+    for (i = 0; i < n; i++)
+        Finished[i] = 0;
+    for (i = 0; i < m; i++)
+        Work[i] = Avail[i];
+    for (k = 0; k < n; k++)
+    {
+        for (i = 0; i < n; i++)
+        {
+            if (Finished[i] == 0)
+            {
+                flag = 0;
+                for (j = 0; j < m; j++)
+                {
+                    if (Need[i][j] > Work[j])
+                        flag = 1;
+                }
+                if (flag == 0 && Finished[i] == 0)
+                {
+                    for (j = 0; j < m; j++)
+                        Work[j] += Alloc[i][j];
+                    Finished[i] = 1;
+                    pflag++;
+                    a[x++] = i;
+                }
+            }
+        }
+    }
+    if (pflag == n)
+    {
+        printf("\nProblem is in Safe State\n");
+        for (i = 0; i < n; i++)
+        {
+            if (i == n - 1)
+            {
+                printf(" P%d", a[i]);
+                break;
+            }
+            printf(" P%d -> ", a[i]);
+        }
+    }
+}
+int main()
+{
+    input();
+    Accept_available();
+    display();
+    display_need();
+    display_available();
+    acceptRequest();
+    request();
+    safetyalgo();
+}
