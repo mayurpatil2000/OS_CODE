@@ -1,0 +1,107 @@
+#include <stdio.h>
+#include <stdlib.h>
+int Alloc[10][10], Need[10][10], Max[10][10], Avail[10];
+int n, m, i, j, a = 65, b = 65, c = 65, d = 65;
+void input()
+{
+    printf("Enter the no of processes: ");
+    scanf("%d", &n);
+    printf("Enter the no of resources: ");
+    scanf("%d", &m);
+    printf("\nEnter the Max Matrix: \n");
+    for (i = 0; i < n; i++)
+    {
+        for (j = 0; j < m; j++)
+            scanf("%d", &Max[i][j]);
+    }
+    printf("\nEnter the Allocation matrix: \n");
+    for (i = 0; i < n; i++)
+    {
+        for (j = 0; j < m; j++)
+            scanf("%d", &Alloc[i][j]);
+    }
+}
+void Accept_available()
+{
+    printf("\nEnter Available Resources: ");
+    for (i = 0; i < m; i++)
+    {
+        scanf("%d", &Avail[i]);
+    }
+}
+void display()
+{
+    printf("\nAllocation Matrix:\n");
+    for (i = 0; i < m; i++)
+    {
+        printf("\t%c", a++);
+    }
+    printf("\n");
+    for (i = 0; i < n; i++)
+    {
+        printf("p%d", i);
+        for (j = 0; j < m; j++)
+            printf("\t%d ", Alloc[i][j]);
+        printf("\n");
+    }
+    printf("\nMax Matrix:\n");
+    for (i = 0; i < m; i++)
+    {
+        printf("\t%c", b++);
+    }
+    printf("\n");
+    for (i = 0; i < n; i++)
+    {
+        printf("p%d", i);
+        for (j = 0; j < m; j++)
+            printf("\t%d ", Max[i][j]);
+        printf("\n");
+    }
+}
+void Eval_Need()
+{
+    for (i = 0; i < n; i++)
+    {
+        for (j = 0; j < m; j++)
+            Need[i][j] = Max[i][j] - Alloc[i][j];
+    }
+}
+void display_need()
+{
+    Eval_Need();
+    printf("Need Matrix:\n");
+    for (i = 0; i < m; i++)
+    {
+        printf("\t%c", c++);
+    }
+    printf("\n");
+    for (i = 0; i < n; i++)
+    {
+        printf("p%d", i);
+        for (j = 0; j < m; j++)
+        {
+            printf("\t%d ", Need[i][j]);
+        }
+        printf("\n");
+    }
+}
+void display_available()
+{
+    printf("Available:\n");
+    for (i = 0; i < m; i++)
+    {
+        printf("\t%c", d++);
+    }
+    printf("\n");
+    for (i = 0; i < m; i++)
+        printf("\t%d ", Avail[i]);
+    printf("\n");
+}
+int main()
+{
+    input();
+    Accept_available();
+    display();
+    display_need();
+    display_available();
+}
